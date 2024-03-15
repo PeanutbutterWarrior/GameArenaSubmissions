@@ -1,9 +1,11 @@
+import java.awt.Graphics2D;
+
 /**
  * Models a simple, solid rectangle. 
  * This class represents a Rectabgle object. When combined with the GameArena class,
  * instances of the Rectangle class can be displayed on the screen.
  */
-public class Rectangle 
+public class Rectangle implements Drawable
 {
 	// The following instance variables define the
 	// information needed to represent a Rectangle
@@ -17,11 +19,11 @@ public class Rectangle
 	private int layer;				// The layer this Rectangle is on.
 	private String colour;				// The colour of this Rectangle
 
-										// Permissable colours are:
-										// BLACK, BLUE, CYAN, DARKGREY, GREY,
-										// GREEN, LIGHTGREY, MAGENTA, ORANGE,
-										// PINK, RED, WHITE, YELLOW 
 
+	public void draw(Graphics2D window) {
+		window.setColor(GameArena.getColourFromString(getColour()));
+		window.fillRect((int)getXPosition(), (int)getYPosition(), (int)getWidth(), (int)getHeight());
+	}
 
 	/**
 	 * Constructor. Creates a Rectangle with the given parameters.

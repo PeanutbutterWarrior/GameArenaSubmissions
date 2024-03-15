@@ -1,10 +1,12 @@
+import java.awt.*;
+
 /**
  * Models a simple piece of text. 
  * This class represents a Text object. When combined with the GameArena class,
  * instances of the Text class can be displayed on the screen to show display
  * an appropriate piece of text.
  */
-public class Text
+public class Text implements Drawable
 {
 	// The following instance variables define the
 	// information needed to represent a line.
@@ -18,10 +20,11 @@ public class Text
 	private String text;				// The actual text to display
 	private String colour;				// The colour of this text
 
-										// Permissable colours are:
-										// BLACK, BLUE, CYAN, DARKGREY, GREY,
-										// GREEN, DARKGREEN, LIGHTGREY, MAGENTA, ORANGE,
-										// PINK, RED, WHITE, YELLOW, BROWN 
+	public void draw(Graphics2D window) {
+		window.setFont(new Font("SansSerif", Font.BOLD, getSize()));
+		window.setColor(GameArena.getColourFromString(getColour()));
+		window.drawString(getText(),(float)getXPosition(), (float)getYPosition());
+	}
 
 	/**
 	 * Obtains the position of this text on the X axis.

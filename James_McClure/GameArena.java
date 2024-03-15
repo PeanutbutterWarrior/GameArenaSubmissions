@@ -1,12 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.image.*;
 import java.awt.event.*;
 import java.util.*;
 import java.lang.Class;
-import java.lang.reflect.*;
-
 /**
  * This class provides a simple window in which grahical objects can be drawn.
  * @author Joe Finney
@@ -20,9 +17,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 
 	private boolean exiting = false;
 
-	private ArrayList<Object> things = new ArrayList<Object>();
+	private ArrayList<Drawable> things = new ArrayList<Drawable>();
 
-	private HashMap<String, Color> colours = new HashMap<>();
+	private static HashMap<String, Color> colours = new HashMap<>();
 
 	private boolean up = false;
 	private boolean down = false;
@@ -89,19 +86,21 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 		this.setSize(width, height);
 
 		// Add standard colours.
-		colours.put("BLACK", Color.BLACK);
-		colours.put("BLUE", Color.BLUE);
-		colours.put("CYAN", Color.CYAN);
-		colours.put("DARKGREY", Color.DARK_GRAY);
-		colours.put("GREY", Color.GRAY);
-		colours.put("GREEN", Color.GREEN);
-		colours.put("LIGHTGREY", Color.LIGHT_GRAY);
-		colours.put("MAGENTA", Color.MAGENTA);
-		colours.put("ORANGE", Color.ORANGE);
-		colours.put("PINK", Color.PINK);
-		colours.put("RED", Color.RED);
-		colours.put("WHITE", Color.WHITE);
-		colours.put("YELLOW", Color.YELLOW);
+		if (colours.isEmpty()) {
+			colours.put("BLACK", Color.BLACK);
+			colours.put("BLUE", Color.BLUE);
+			colours.put("CYAN", Color.CYAN);
+			colours.put("DARKGREY", Color.DARK_GRAY);
+			colours.put("GREY", Color.GRAY);
+			colours.put("GREEN", Color.GREEN);
+			colours.put("LIGHTGREY", Color.LIGHT_GRAY);
+			colours.put("MAGENTA", Color.MAGENTA);
+			colours.put("ORANGE", Color.ORANGE);
+			colours.put("PINK", Color.PINK);
+			colours.put("RED", Color.RED);
+			colours.put("WHITE", Color.WHITE);
+			colours.put("YELLOW", Color.YELLOW);
+		}
 
 		// Setup graphics rendering hints for quality
 		renderingHints = new HashMap<>();
@@ -237,50 +236,9 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 				if (backgroundImage != null)
 					graphics.drawImage(backgroundImage, 0, 0, arenaWidth, arenaHeight, 0, 0, backgroundImage.getWidth(null), backgroundImage.getHeight(null), null);
 
-				for (Object o : things)
+				for (Drawable o : things)
 				{
-					if (o instanceof Ball)
-					{
-						Ball b = (Ball) o;
-						graphics.setColor(this.getColourFromString(b.getColour()));
-						graphics.fillOval((int)(b.getXPosition() - b.getSize()/2), (int)(b.getYPosition() - b.getSize()/2), (int)b.getSize(), (int)b.getSize());
-					}
-
-					if (o instanceof Rectangle)
-					{
-						Rectangle r = (Rectangle) o;
-						graphics.setColor(this.getColourFromString(r.getColour()));
-						graphics.fillRect((int)r.getXPosition(), (int)r.getYPosition(), (int)r.getWidth(), (int)r.getHeight());
-					}
-
-					if (o instanceof Line)
-					{
-						Line l = (Line) o;
-						graphics.setColor(this.getColourFromString(l.getColour()));
-						graphics.setStroke(new BasicStroke((float)l.getWidth()));
-
-						float sx = (float)l.getXStart();
-						float sy = (float)l.getYStart();
-						float ex = (float)l.getXEnd();
-						float ey = (float)l.getYEnd();
-
-						if (l.getArrowSize() > 0)
-						{
-							float arrowRatio = (float) (1.0 - ((l.getWidth() * l.getArrowSize()) / l.getLength()));
-							ex = sx + ((ex - sx) * arrowRatio);
-							ey = sy + ((ey - sy) * arrowRatio);
-							graphics.fillPolygon(l.getArrowX(), l.getArrowY(), 3);
-						}
-						graphics.draw(new Line2D.Float(sx,sy,ex,ey));
-					}
-
-					if (o instanceof Text)
-					{
-						Text t = (Text) o;
-						graphics.setFont(new Font("SansSerif", Font.BOLD, t.getSize()));
-						graphics.setColor(this.getColourFromString(t.getColour()));
-						graphics.drawString(t.getText(),(float)t.getXPosition(), (float)t.getYPosition());
-					}
+					o.draw(graphics);
 				}
 			}
 
@@ -292,7 +250,12 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	// Shouldn't really handle colour this way, but the student's haven't been introduced
 	// to constants properly yet, hmmm....
 	//
-	private Color getColourFromString(String col)
+	/**
+	 * Get the color represented by a string
+	 * @param col Color string to get
+	 * @return Color object
+	 */
+	public static Color getColourFromString(String col)
 	{
 		Color c = colours.get(col.toUpperCase());
 
@@ -317,9 +280,10 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 *
 	 * @param o the object to add to the drawlist.
 	 */
-	private void addThing(Object o, int layer)
+	public void addThing(Drawable o)
 	{
 		boolean added = false;
+		int layer = o.getLayer();
 
 		if (exiting)
 			return;
@@ -342,20 +306,8 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 				// Try to insert this object into the list.
 				for (int i=0; i<things.size(); i++)
 				{
-					int l = 0;
-					Object obj = things.get(i);
-
-					if (obj instanceof Ball)
-						l = ((Ball)obj).getLayer();
-
-					if (obj instanceof Rectangle)
-						l = ((Rectangle)obj).getLayer();
-
-					if (obj instanceof Line)
-						l = ((Line)obj).getLayer();
-
-					if (obj instanceof Text)
-						l = ((Text)obj).getLayer();
+					Drawable obj = things.get(i);
+					int l = obj.getLayer();
 
 					if (layer < l)
 					{
@@ -377,101 +329,12 @@ public class GameArena extends JPanel implements Runnable, KeyListener, MouseLis
 	 *
 	 * @param o the object to remove from the drawlist.
 	 */
-	private void removeObject(Object o)
+	public void removeObject(Drawable o)
 	{
 		synchronized (this)
 		{
 			things.remove(o);
 		}
-	}
-
-	/**
-	 * Adds a given Ball to the GameArena.
-	 * Once a Ball is added, it will automatically appear on the window.
-	 *
-	 * @param b the ball to add to the GameArena.
-	 */
-	public void addBall(Ball b)
-	{
-		this.addThing(b, b.getLayer());
-	}
-
-	/**
-	 * Adds a given Rectangle to the GameArena.
-	 * Once a rectangle is added, it will automatically appear on the window.
-	 *
-	 * @param r the rectangle to add to the GameArena.
-	 */
-	public void addRectangle(Rectangle r)
-	{
-		this.addThing(r, r.getLayer());
-	}
-
-	/**
-	 * Adds a given Line to the GameArena.
-	 * Once a Line is added, it will automatically appear on the window.
-	 *
-	 * @param l the line to add to the GameArena.
-	 */
-	public void addLine(Line l)
-	{
-		this.addThing(l, l.getLayer());
-	}
-
-	/**
-	 * Adds a given Text object to the GameArena.
-	 * Once a Text object is added, it will automatically appear on the window.
-	 *
-	 * @param t the text object to add to the GameArena.
-	 */
-	public void addText(Text t)
-	{
-		this.addThing(t, t.getLayer());
-	}
-
-
-	/**
-	 * Remove a Rectangle from the GameArena.
-	 * Once a Rectangle is removed, it will no longer appear on the window.
-	 *
-	 * @param r the rectangle to remove from the GameArena.
-	 */
-	public void removeRectangle(Rectangle r)
-	{
-		this.removeObject(r);
-	}
-
-	/**
-	 * Remove a Ball from the GameArena.
-	 * Once a Ball is removed, it will no longer appear on the window.
-	 *
-	 * @param b the ball to remove from the GameArena.
-	 */
-	public void removeBall(Ball b)
-	{
-		this.removeObject(b);
-	}
-
-	/**
-	 * Remove a Line from the GameArena.
-	 * Once a Line is removed, it will no longer appear on the window.
-	 *
-	 * @param l the line to remove from the GameArena.
-	 */
-	public void removeLine(Line l)
-	{
-		this.removeObject(l);
-	}
-
-	/**
-	 * Remove a Text object from the GameArena.
-	 * Once a Text object is removed, it will no longer appear on the window.
-	 *
-	 * @param t the text object to remove from the GameArena.
-	 */
-	public void removeText(Text t)
-	{
-		this.removeObject(t);
 	}
 
 	/**

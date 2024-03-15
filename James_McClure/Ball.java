@@ -1,9 +1,11 @@
+import java.awt.Graphics2D;
+
 /**
  * Models a simple solid sphere. 
  * This class represents a Ball object. When combined with the GameArena class,
  * instances of the Ball class can be displayed on the screen.
  */
-public class Ball 
+public class Ball implements Drawable
 {
 	// The following instance variables define the
 	// information needed to represent a Ball
@@ -16,10 +18,10 @@ public class Ball
 	private int layer;					// The layer of this ball is on.
 	private String colour;				// The colour of this Ball
 
-										// Permissable colours are:
-										// BLACK, BLUE, CYAN, DARKGREY, GREY,
-										// GREEN, LIGHTGREY, MAGENTA, ORANGE,
-										// PINK, RED, WHITE, YELLOW or #RRGGBB 
+	public void draw(Graphics2D window) {
+		window.setColor(GameArena.getColourFromString(getColour()));
+		window.fillOval((int)(getXPosition() - getSize()/2), (int)(getYPosition() - getSize()/2), (int)getSize(), (int)getSize());
+	}
 
 	/**
 	 * Constructor. Creates a Ball with the given parameters.

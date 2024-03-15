@@ -1,9 +1,13 @@
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
+import java.awt.geom.*;
+
 /**
  * Models a simple line. 
  * This class represents a Line object. When combined with the GameArena class,
  * instances of the Line class can be displayed on the screen.
  */
-public class Line 
+public class Line implements Drawable
 {
 	// The following instance variables define the
 	// information needed to represent a line.
@@ -21,10 +25,25 @@ public class Line
 
 	private int layer;							// The layer this line is drawn on
 	private String colour = "WHITE";			// The colour of this line
-												// Permissable colours are:
-												// BLACK, BLUE, CYAN, DARKGREY, GREY,
-												// GREEN, DARKGREEN, LIGHTGREY, MAGENTA, ORANGE,
-												// PINK, RED, WHITE, YELLOW, BROWN 
+
+	public void draw(Graphics2D window) {
+		window.setColor(GameArena.getColourFromString(getColour()));
+		window.setStroke(new BasicStroke((float)getWidth()));
+
+		float sx = (float)getXStart();
+		float sy = (float)getYStart();
+		float ex = (float)getXEnd();
+		float ey = (float)getYEnd();
+
+		if (getArrowSize() > 0)
+		{
+			float arrowRatio = (float) (1.0 - ((getWidth() * getArrowSize()) / getLength()));
+			ex = sx + ((ex - sx) * arrowRatio);
+			ey = sy + ((ey - sy) * arrowRatio);
+			window.fillPolygon(getArrowX(), getArrowY(), 3);
+		}
+		window.draw(new Line2D.Float(sx,sy,ex,ey));
+	}
 
 	/**
 	 * Obtains the start position of this line on the X axis.

@@ -2,11 +2,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SpaceInvaders {
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 500;
+    public static final int SCALE = 2;
+    public static final int WIDTH = 250 * SCALE;
+    public static final int HEIGHT = 250 * SCALE;
+
     public static void main(String[] args) {
-        GameArena arena = new GameArena(500, 500);
-        Player player = new Player();
+        GameArena arena = new GameArena(WIDTH, HEIGHT);
+        Player player = new Player(250, 450);
         
         // Behaves mostly like a queue, a ringbuffer might be more efficient
         ArrayList<Bullet> bullets = new ArrayList<>();
@@ -28,9 +30,9 @@ public class SpaceInvaders {
             }
 
             if (arena.leftPressed())
-                player.move(-Player.SPEED);
+                player.move(-1);
             else if (arena.rightPressed())
-                player.move(Player.SPEED);
+                player.move(1);
             
             if (arena.upPressed() && player.canFire()) {
                 Bullet newBullet = player.fire();

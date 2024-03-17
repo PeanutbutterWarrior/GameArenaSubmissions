@@ -1,172 +1,73 @@
-import java.awt.Graphics2D;
-
-public class Crab implements Drawable{
+public class Crab extends Enemy {
     private static final String COLOUR = "WHITE";
     private static final String EYE_COLOUR = "BLACK";
+    private static final int ANIMATION_SPEED = 50;
 
-    private int x;
-    private int y;
-    private int speed;
-
-    private Rectangle boundingBox;
-    private RelativeRect[] components;
-
-    public Crab(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.speed = 30;
-
-        boundingBox = new Rectangle(
-            x,
-            y,
-            11 * SpaceInvaders.SCALE,
-            8 * SpaceInvaders.SCALE,
-            COLOUR
-        );
-        
-        components = new RelativeRect[14];
-
+    protected void populateSprite1() {
         // Left antenna
-        components[0] = new RelativeRect(
-            2 * SpaceInvaders.SCALE,
-            0,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[2] = new RelativeRect(
-            3 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(2, 0, 1, 1);
+        activeSprite.addComponent(3, 1, 1, 1);
 
         // Right antenna
-        components[1] = new RelativeRect(
-            8 * SpaceInvaders.SCALE,
-            0,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[3] = new RelativeRect(
-            7 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(8, 0, 1, 1);
+        activeSprite.addComponent(7, 1, 1, 1);
 
         // Body
-        components[4] = new RelativeRect(
-            2 * SpaceInvaders.SCALE,
-            2 * SpaceInvaders.SCALE,
-            7 * SpaceInvaders.SCALE,
-            4 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[5] = new RelativeRect(
-            1 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            9 * SpaceInvaders.SCALE,
-            2 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(2, 2, 7, 4);
+        activeSprite.addComponent(1, 3, 9, 2);
 
         // Eyes
-        components[12] = new RelativeRect(
-            3 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            EYE_COLOUR,
-            1,
-            boundingBox
-        );
-        components[13] = new RelativeRect(
-            7 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            EYE_COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(3, 3, 1, 1, EYE_COLOUR);
+        activeSprite.addComponent(7, 3, 1, 1, EYE_COLOUR);
 
         // Left arm
-        components[6] = new RelativeRect(
-            0 * SpaceInvaders.SCALE,
-            4 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(0, 4, 1, 3);
 
         // Right arm
-        components[7] = new RelativeRect(
-            10 * SpaceInvaders.SCALE,
-            4 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(10, 4, 1, 3);
         
         // Left mandible
-        components[8] = new RelativeRect(
-            2 * SpaceInvaders.SCALE,
-            6 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-
-        components[9] = new RelativeRect(
-            3 * SpaceInvaders.SCALE,
-            7 * SpaceInvaders.SCALE,
-            2 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        activeSprite.addComponent(2, 6, 1, 1);
+        activeSprite.addComponent(3, 7, 2, 1);
 
         // Right mandible
-        components[10] = new RelativeRect(
-            8 * SpaceInvaders.SCALE,
-            6 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-
-        components[11] = new RelativeRect(
-            6 * SpaceInvaders.SCALE,
-            7 * SpaceInvaders.SCALE,
-            2 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-
-    
+        activeSprite.addComponent(8, 6, 1, 1);
+        activeSprite.addComponent(6, 7, 2, 1);
     }
 
-    public void draw(Graphics2D window) {
-        for (RelativeRect r: components) {
-            r.draw(window);
-        }
+    protected void populateSprite2() {
+        // Left antenna
+        inactiveSprite.addComponent(2, 0, 1, 1);
+        inactiveSprite.addComponent(3, 1, 1, 1);
+
+        // Right antenna
+        inactiveSprite.addComponent(8, 0, 1, 1);
+        inactiveSprite.addComponent(7, 1, 1, 1);
+
+        // Body
+        inactiveSprite.addComponent(2, 2, 7, 4);
+        inactiveSprite.addComponent(1, 3, 9, 3);
+
+        // Eyes
+        inactiveSprite.addComponent(3, 3, 1, 1, EYE_COLOUR);
+        inactiveSprite.addComponent(7, 3, 1, 1, EYE_COLOUR);
+
+        // Left arm
+        inactiveSprite.addComponent(0, 1, 1, 4);
+
+        // Right arm
+        inactiveSprite.addComponent(10, 1, 1, 4);
+
+        // Left mandible
+        inactiveSprite.addComponent(2, 6, 1, 1);
+        inactiveSprite.addComponent(1, 7, 1, 1);
+
+        // Right mandible
+        inactiveSprite.addComponent(8, 6, 1, 1);
+        inactiveSprite.addComponent(9, 7, 1, 1);
     }
 
-    public int getLayer() {
-        return 0;
+    public Crab(int x, int y) {
+        super(x, y, 11, 8, 30, ANIMATION_SPEED, COLOUR);
     }
 }

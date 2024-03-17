@@ -10,7 +10,7 @@ public class Player implements Drawable{
     private int fireCooldown;
 
     private Rectangle boundingBox;
-    private RelativeRect components[];
+    private Sprite sprite;
 
     public Player(int x, int y) {
         this.x = x;
@@ -20,52 +20,22 @@ public class Player implements Drawable{
         boundingBox = new Rectangle(
             x,
             y,
-            13 * SpaceInvaders.SCALE,
+            13 * SpaceInvaders.SCALE, 
             7 * SpaceInvaders.SCALE,
             COLOUR
         );
 
-        components = new RelativeRect[4];
-        components[0] = new RelativeRect(
-            0,
-            4 * SpaceInvaders.SCALE,
-            13 * SpaceInvaders.SCALE,
-            4 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[1] = new RelativeRect(
-            1 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            11 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[2] = new RelativeRect(
-            5 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            3 * SpaceInvaders.SCALE,
-            2 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
-        components[3] = new RelativeRect(
-            6 * SpaceInvaders.SCALE,
-            0,
-            1 * SpaceInvaders.SCALE,
-            1 * SpaceInvaders.SCALE,
-            COLOUR,
-            boundingBox
-        );
+        sprite = new Sprite(boundingBox, COLOUR, 0);
+
+        sprite.addComponent(0, 4, 13, 4);
+        sprite.addComponent(1, 3, 11, 1);
+        sprite.addComponent(5, 1, 3, 2);
+        sprite.addComponent(6, 0, 1, 1);
 
     }
     
     public void draw(Graphics2D window) {
-        for (Rectangle rect: components){ 
-            rect.draw(window);
-        }
-
+        sprite.draw(window);
     }
 
     public void move(int dx) {
@@ -74,7 +44,7 @@ public class Player implements Drawable{
     }
 
     public int getLayer() {
-        return 0;
+        return sprite.getLayer();
     }
 
     public void update() {

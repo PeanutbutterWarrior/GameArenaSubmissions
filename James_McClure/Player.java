@@ -1,7 +1,7 @@
 import java.awt.Graphics2D;
 
 public class Player implements Drawable{
-    private static final int FIRE_COOLDOWN = 1;
+    private static final int FIRE_COOLDOWN = 20;
     private static final String COLOUR = "WHITE";
     private static final int SPEED = 5;
 

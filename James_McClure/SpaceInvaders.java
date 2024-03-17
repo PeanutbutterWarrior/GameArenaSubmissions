@@ -9,10 +9,13 @@ public class SpaceInvaders {
     public static void main(String[] args) {
         GameArena arena = new GameArena(WIDTH, HEIGHT);
         Player player = new Player(250, 450);
+        Crab crab = new Crab(50, 50);
         
         // Behaves mostly like a queue, a ringbuffer might be more efficient
         ArrayList<Bullet> bullets = new ArrayList<>();
+        
         arena.addThing(player);
+        arena.addThing(crab);
 
         while (true) {
             player.update();

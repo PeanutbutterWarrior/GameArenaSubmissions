@@ -1,7 +1,7 @@
 import java.awt.Graphics2D;
 
 public class Bullet implements Drawable {
-    static final int SPEED = 10;
+    static final int SPEED = 1;
     private static final String COLOUR = "WHITE";
     private Rectangle rect;
     private int x;
@@ -21,6 +21,10 @@ public class Bullet implements Drawable {
             dead = true;
     }
 
+    public void markDead() {
+        dead = true;
+    }
+
     public boolean isDead() {
         return dead;
     }
@@ -31,5 +35,9 @@ public class Bullet implements Drawable {
 
     public int getLayer() {
         return 1;
+    }
+
+    public Rectangle getBoundingBox() {
+        return rect;
     }
 }

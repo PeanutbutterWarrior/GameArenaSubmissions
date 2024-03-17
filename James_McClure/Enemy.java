@@ -30,7 +30,7 @@ public abstract class Enemy implements Drawable {
         animationTimer = animationSpeed;
         isDead = false;
 
-        boundingBox = new Rectangle(x, y, w, h, "WHITE");
+        boundingBox = new Rectangle(x, y, w * SpaceInvaders.SCALE, h * SpaceInvaders.SCALE, "WHITE");
 
         activeSprite = new Sprite(boundingBox, defaultColor, 0);
         inactiveSprite = new Sprite(boundingBox, defaultColor, 0);
